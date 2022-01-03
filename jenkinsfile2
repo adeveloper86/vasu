@@ -2,20 +2,20 @@ pipeline {
     agent any
 
     stages {
-        stage('scm') {
+        stage('SCM') {
             steps {
                 git 'https://github.com/awspandian/vasu.git'
             }
         }
-		stage('build') {
+		stage('BUILD') {
             steps {
                 sh 'mvn clean'
 				sh 'mvn install'
             }
         }
-		stage('deploy') {
+		stage('Deployment') {
             steps {
-                sh 'cp -rp "/var/lib/jenkins/workspace/jan3-pipeline/target/sweet.war" "/opt/apache-tomcat/webapps"'
+               deploy adapters: [tomcat8(credentialsId: 'web', path: '', url: 'http://192.168.33.9:8888/')], contextPath: 'jan-pipe', war: '**/*.war'
             }
         }
     }
