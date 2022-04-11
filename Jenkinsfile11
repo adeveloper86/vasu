@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('SCM') {
+            steps {
+                git 'https://github.com/awspandian/vasu.git'
+            }
+        }
+		stage('BUILD') {
+            steps {
+                bat 'mvn clean'
+				bat 'mvn install'
+            }
+        }
+		stage('Deploy') {
+            steps {
+			deploy adapters: [tomcat8(credentialsId: 'web', path: '', url: 'http://localhost:8080/')], contextPath: 'pipeline-pro', war: '**/*.war'
+            }
+        }
+    }
+}
